@@ -1,0 +1,43 @@
+# Root
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+*.egg
+*.sqlite3
+
+# Python environments
+venv/
+.venv/
+.env
+.env.*
+
+# Python tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+
+# Node/Next
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+
+# Frontend env
+frontend/.env
+frontend/.env.*
+
+# Editor
+.vscode/
+.idea/
