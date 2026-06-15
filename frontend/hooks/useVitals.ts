@@ -30,9 +30,7 @@ export function useVitals() {
           const payload = JSON.parse(event.data) as VitalReading;
           if (
             typeof payload.heart_rate !== "number" ||
-            typeof payload.spo2 !== "number" ||
-            typeof payload.temperature !== "number" ||
-            typeof payload.status !== "string" ||
+            (payload.status !== "normal" && payload.status !== "abnormal") ||
             typeof payload.timestamp !== "string"
           ) {
             return;

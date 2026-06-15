@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-_SERIAL_PORT = os.getenv("SERIAL_PORT")
+_SERIAL_PORT = os.getenv("SERIAL_PORT", "COM4")
 _BAUD_RATE = int(os.getenv("BAUD_RATE", "9600"))
 
 _RECONNECT_DELAY_SEC = 2.0
@@ -23,11 +23,6 @@ _stop_event = threading.Event()
 
 
 def _read_loop() -> None:
-    if not _SERIAL_PORT:
-        raise RuntimeError(
-            "SERIAL_PORT is not set. Add it to backend/.env (e.g., COM3)."
-        )
-
     while not _stop_event.is_set():
         try:
             with serial.Serial(_SERIAL_PORT, _BAUD_RATE, timeout=1) as ser:
@@ -35,20 +30,13 @@ def _read_loop() -> None:
                     raw = ser.readline().decode("utf-8", errors="ignore").strip()
                     if not raw:
                         continue
-                    parts = [p.strip() for p in raw.split(",")]
-                    if len(parts) != 3:
-                        continue
                     try:
-                        heart_rate = float(parts[0])
-                        spo2 = float(parts[1])
-                        temperature = float(parts[2])
+                        heart_rate = float(raw.split(",", 1)[0].strip())
                     except ValueError:
                         continue
 
                     reading = {
                         "heart_rate": heart_rate,
-                        "spo2": spo2,
-                        "temperature": temperature,
                     }
                     with _latest_lock:
                         global _latest_reading

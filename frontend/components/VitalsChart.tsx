@@ -24,8 +24,7 @@ type VitalsChartProps = {
 
 const isThresholdKey = (
   key: keyof VitalReading
-): key is "heart_rate" | "spo2" | "temperature" =>
-  key === "heart_rate" || key === "spo2" || key === "temperature";
+): key is "heart_rate" => key === "heart_rate";
 
 const formatTime = (value: string) => {
   const date = new Date(value);
@@ -41,19 +40,19 @@ export function VitalsChart({ data, dataKey, color, label, unit }: VitalsChartPr
   const normalRange = thresholdKey ? THRESHOLDS[thresholdKey].normal : null;
 
   return (
-    <div className="min-w-0 rounded-xl border bg-white p-4 shadow-sm">
-      <div className="mb-3 text-sm font-semibold text-slate-700">{label}</div>
+    <div className="min-w-0 rounded-lg border border-slate-700 bg-slate-950 p-4 shadow-sm">
+      <div className="mb-3 text-sm font-semibold text-slate-300">{label}</div>
       <div className="h-56 min-h-[220px] w-full">
         <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={220}>
           <LineChart data={displayData} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
             <XAxis
               dataKey="timestamp"
               tickFormatter={formatTime}
-              tick={{ fontSize: 11, fill: "#64748b" }}
+              tick={{ fontSize: 11, fill: "#94a3b8" }}
               minTickGap={16}
             />
-            <YAxis tick={{ fontSize: 11, fill: "#64748b" }} width={32} />
+            <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} width={32} />
             <Tooltip
               formatter={(value) => [`${value} ${unit}`, label]}
               labelFormatter={(value) => formatTime(String(value))}

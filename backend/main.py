@@ -8,13 +8,12 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
-import predictor
 import serial_reader
+from predictor import predict
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     serial_reader.get_latest_reading()
-    predictor._load_assets()
 
     global _broadcaster_task
     if _broadcaster_task is None or _broadcaster_task.done():
@@ -45,17 +44,11 @@ _broadcaster_task: Optional[asyncio.Task] = None
 
 
 def _build_payload(reading: dict[str, float]) -> dict[str, object]:
-    status = predictor.predict(
-        heart_rate=reading["heart_rate"],
-        spo2=reading["spo2"],
-        temperature=reading["temperature"],
-    )
     timestamp = datetime.now(timezone.utc).isoformat()
+    heart_rate = reading["heart_rate"]
     return {
-        "heart_rate": reading["heart_rate"],
-        "spo2": reading["spo2"],
-        "temperature": reading["temperature"],
-        "status": status,
+        "heart_rate": heart_rate,
+        "status": predict(heart_rate),
         "timestamp": timestamp,
     }
 
